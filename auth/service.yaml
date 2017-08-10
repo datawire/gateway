@@ -1,0 +1,12 @@
+name: auth         # name of the service
+
+targetPort: 8080   # port the container exposes
+memory: 0.25G      # minimum available memory necessary to schedule the service
+cpu: 0.25          # minimum available cpu necessary to schedule the service
+
+api_proto: "https" # http or https
+
+auth0:
+  domain: "datawire.auth0.com"
+  client_id: "lQFFtLjzQTlr2Vme1117ZQLtuJ8eXQDp"
+  api_audience: "datawire-api"

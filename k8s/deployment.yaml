@@ -4,6 +4,24 @@ kind: Service
 metadata:
   name: {{service.name}}
   annotations:
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:914373874199:certificate/b5015aa3-43fa-4db0-b37b-64669f057530"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+spec:
+  selector:
+    app: {{service.name}}
+  ports:
+    - name: https
+      protocol: {{service.protocol or 'TCP'}}
+      port: {{service.port or '443'}}
+      targetPort: {{service.targetPort or '8080'}}
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{service.name}}-metrics
+  annotations:
     prometheus.io/scrape: "true"
     prometheus.io/path: "/metrics"
     prometheus.io/port: "9102"
@@ -11,14 +29,10 @@ spec:
   selector:
     app: {{service.name}}
   ports:
-    - name: http
-      protocol: {{service.protocol or 'TCP'}}
-      port: {{service.port or '80'}}
-      targetPort: {{service.targetPort or '8080'}}
     - name: metrics
       port: 9102
       targetPort: 9102
-  type: LoadBalancer
+  type: ClusterIP
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -153,7 +167,6 @@ data:
                     {% for prefix, weights in routes|dictsort %}
                         {
                           "prefix":"{{prefix}}",
-                          "prefix_rewrite":"/",
                           "weighted_clusters": {
                             "clusters": [
                           {% for service, weight in ([(weights, 100)] if weights is string else weights|dictsort) %}

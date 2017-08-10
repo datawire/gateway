@@ -7,5 +7,5 @@ memory: 0.25G
 cpu: 0.25
 
 routes:
-  "/cluster/": cluster
-  "/scout/": scout
+  "/cluster/": kubernaut.kubernaut.svc.cluster.local
+  "/scout/": scout.scout.svc.cluster.local

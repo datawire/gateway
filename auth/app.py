@@ -128,7 +128,9 @@ def is_valid(token):
                 issuer="https://"+AUTH0_DOMAIN+"/")
             return True
         except jwt.ExpiredSignatureError:
-            return False
+            # XXX: this is a short term workaround until we have
+            # proper API keys
+            return True
         except jwt.JWTClaimsError, e:
             raise APIError("invalid_claims", "incorrect claims, please check the audience and issuer: %s" % e, 401)
         except Exception, e:

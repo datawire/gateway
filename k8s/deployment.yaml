@@ -153,6 +153,9 @@ data:
                   }
                 ],
                 "route_config":{
+                  "request_headers_to_add": [
+                    {"key": "x-gateway-proto", "value": "http"}
+                  ],
                   "virtual_hosts":[
                     {
                       "name":"backend",
@@ -162,11 +165,7 @@ data:
                       "routes":[
                         {
                           "prefix":"/",
-                          "cluster": "fallback",
-                          "request_headers_to_add": [
-                            {"key": "x-gateway-proto", "value": "http"}
-                          ]
-                        }
+                          "cluster": "fallback"                        }
                       ]
                     }
                   ]
@@ -205,6 +204,9 @@ data:
                   }
                 ],
                 "route_config":{
+                  "request_headers_to_add": [
+                    {"key": "x-gateway-proto", "value": "https"}
+                  ],
                   "virtual_hosts":[
                     {
                       "name":"backend",

@@ -56,7 +56,10 @@ def jwks():
 @app.before_request
 def http_redir():
     if request.headers.get("x-gateway-proto", API_PROTO) != API_PROTO:
-        return redirect("%s://%s%s" % (API_PROTO, request.host, request.full_path), 301)
+        path = request.full_path
+        if path.endswith("?"):
+            path = path[:-1]
+        return redirect("%s://%s%s" % (API_PROTO, request.host, path), 301)
 
 def get_authority():
     return request.json[":authority"]

@@ -12,9 +12,9 @@ spec:
     app: {{service.name}}
   ports:
     - name: https
-      protocol: {{service.protocol or 'TCP'}}
-      port: {{service.port or '443'}}
-      targetPort: {{service.targetPort or '8080'}}
+      protocol: TCP
+      port: 443
+      targetPort: 81
   type: LoadBalancer
 ---
 apiVersion: v1
@@ -129,7 +129,7 @@ data:
       },
       "listeners":[
         {
-          "address":"tcp://0.0.0.0:80",
+          "address":"tcp://0.0.0.0:81",
           "filters":[
             {
               "name":"http_connection_manager",
@@ -184,7 +184,7 @@ data:
                     }
                   ]
                 },
-                "stat_prefix":"ingress_http"
+                "stat_prefix":"https"
               }
             }
           ]

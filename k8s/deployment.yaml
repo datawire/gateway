@@ -15,6 +15,10 @@ spec:
       protocol: TCP
       port: 443
       targetPort: 81
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
   type: LoadBalancer
 ---
 apiVersion: v1
@@ -128,6 +132,50 @@ data:
         ]
       },
       "listeners":[
+        {
+          "address":"tcp://0.0.0.0:80",
+          "filters":[
+            {
+              "name":"http_connection_manager",
+              "type":"read",
+              "config":{
+                "access_log":[
+                  {
+                    "path":"/tmp/access_log"
+                  }
+                ],
+                "codec_type":"auto",
+                "filters":[
+                  {
+                    "config":{},
+                    "name":"router",
+                    "type":"decoder"
+                  }
+                ],
+                "route_config":{
+                  "virtual_hosts":[
+                    {
+                      "name":"backend",
+                      "domains":[
+                        "*"
+                      ],
+                      "routes":[
+                        {
+                          "prefix":"/",
+                          "cluster": "fallback",
+                          "request_headers_to_add": [
+                            {"key": "x-gateway-proto", "value": "http"}
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "stat_prefix":"http"
+              }
+            }
+          ]
+        },
         {
           "address":"tcp://0.0.0.0:81",
           "filters":[

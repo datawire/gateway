@@ -53,6 +53,11 @@ def jwks():
     jsonurl = urllib.urlopen("https://"+AUTH0_DOMAIN+"/.well-known/jwks.json")
     JWKS = json.loads(jsonurl.read())
 
+@app.before_request
+def http_redir():
+    if request.headers.get("x-gateway-proto", API_PROTO) != API_PROTO:
+        return redirect("%s://%s%s" % (API_PROTO, request.host, request.full_path), 301)
+
 def get_authority():
     return request.json[":authority"]
 
@@ -93,8 +98,6 @@ def get_token():
 
 def is_valid(token):
     if not token: return False
-
-    print "URL:", request.url_root, request.headers.get("Host", None), request.json
 
     try:
         unverified_header = jwt.get_unverified_header(token)

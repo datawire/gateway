@@ -154,20 +154,44 @@ def token():
     return ("""
 <head>
   <title>Token</title>
+  <style>
+    pre {
+      display: inline;
+      font-family: monospace;
+      background-color: #E0E0E0;
+    }
+  </style>
 </head>
 <body>
-<pre>
-cat << EOF > ~/.config/kubernaut/config.json
-{
-  "credentials": {
-    "kubernaut.io": {
-      "token": "%s"
-    }
+
+Thank you for requesting a token to user Kubernaut! Your token is show
+below:
+
+<p>
+  <textarea class="js-copytextarea" readonly="true" rows="10" cols="80">%s</textarea>
+  <button class="js-textareacopybtn" style="vertical-align:top;">Copy</button>
+</p>
+
+You can configure the Kubernaut CLI to use this token by running the
+command: <pre>kubernaut set-token &lt;TOKEN&gt;</pre>
+
+<script>
+var copyTextareaBtn = document.querySelector('.js-textareacopybtn');
+
+copyTextareaBtn.addEventListener('click', function(event) {
+  var copyTextarea = document.querySelector('.js-copytextarea');
+  copyTextarea.select();
+
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    console.log('Copying text command was ' + msg);
+  } catch (err) {
+    console.log('Oops, unable to copy');
   }
-}
-EOF
-<pre>
+});
 </script>
+
 </body>
 </html>
 

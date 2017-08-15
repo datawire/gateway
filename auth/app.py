@@ -136,12 +136,16 @@ def is_valid(token):
         except Exception, e:
             raise APIError("invalid_header", "Unable to parse authentication token: %s" % e, 400)
 
+AUTH_WHITELIST = ("/callback", "/health")
+APP_WHITELIST = ("/scout",)
+WHITELIST = set(AUTH_WHITELIST + APP_WHITELIST)
+
 @app.route('/ambassador/auth', methods=['POST'])
 def root():
     url = request.json[":path"]
     path, query = urllib.splitquery(url)
 
-    if path in ("/callback", "/health"):
+    if path in WHITELIST:
         return ('', 200)
 
     if is_valid(get_token()):

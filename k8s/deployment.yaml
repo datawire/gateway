@@ -133,7 +133,7 @@ data:
             "connect_timeout_ms":1000,
             "hosts":[
               {
-                "url":"tcp://gateway-dev:81"
+                "url":"tcp://gateway.dev.svc.cluster.local:81"
               }
             ],
             "lb_type":"round_robin",
@@ -225,11 +225,13 @@ data:
                         "*"
                       ],
                       "routes":[
+                    {% if env.K8S_NAMESPACE != "dev" %}
                         {
                           "prefix":"/",
                           "headers":[{"name": "x-gateway-env", "value": "dev"}],
                           "cluster": "dev"
                         },
+                    {% endif %}
                     {% for prefix, weights in routes|dictsort %}
                         {
                           "prefix":"{{prefix}}",

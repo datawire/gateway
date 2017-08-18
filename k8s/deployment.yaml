@@ -128,6 +128,17 @@ data:
             "lb_type":"round_robin",
             "name":"fallback",
             "type":"strict_dns"
+          },
+          {
+            "connect_timeout_ms":1000,
+            "hosts":[
+              {
+                "url":"tcp://gateway-dev:81"
+              }
+            ],
+            "lb_type":"round_robin",
+            "name":"dev",
+            "type":"strict_dns"
           }
         ]
       },
@@ -214,6 +225,11 @@ data:
                         "*"
                       ],
                       "routes":[
+                        {
+                          "prefix":"/",
+                          "headers":[{"name": "x-gateway-env", "value": "dev"}],
+                          "cluster": "dev"
+                        },
                     {% for prefix, weights in routes|dictsort %}
                         {
                           "prefix":"{{prefix}}",

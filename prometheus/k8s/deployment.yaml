@@ -1,3 +1,4 @@
+{% if env.K8S_NAMESPACE != "dev" %}
 ---
 apiVersion: v1
 kind: Service
@@ -113,3 +114,4 @@ data:
       - source_labels: [__meta_kubernetes_service_name]
         action: replace
         target_label: kubernetes_name
+{% endif %}

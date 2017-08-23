@@ -64,7 +64,7 @@ def http_redir():
 def get_authority():
     return request.json[":authority"]
 
-def auth_url(url, scopes="email name profile"):
+def auth_url(url, scopes="openid email name profile"):
     params = {
         "audience": AUTH0_API_AUDIENCE,
         "scope": scopes,
@@ -152,6 +152,10 @@ def root():
         return ('', 200)
     else:
         return redirect(auth_url(url), code=302)
+
+@app.route('/')
+def send_to_github():
+    return redirect("https://github.com/datawire/kubernaut", 302)
 
 @app.route('/token')
 def token():

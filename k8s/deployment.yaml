@@ -236,12 +236,14 @@ data:
                         "*"
                       ],
                       "routes":[
+                    {% if env.K8S_NAMESPACE != "dev" %}
                         {
                           "prefix":"/",
                           "headers":[{"name": "x-gateway-env", "value": "dev"}],
                           "cluster": "dev",
                           "request_headers_to_add": [{"key": "x-gateway-env", "value": ""}]
                         },
+                    {% endif %}
                     {% for prefix, weights in routes|dictsort %}
                         {
                           "prefix":"{{prefix}}",

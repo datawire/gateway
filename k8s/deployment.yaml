@@ -3,23 +3,33 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{service.name}}
+{% if env.K8S_NAMESPACE != "dev" %}
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:914373874199:certificate/b5015aa3-43fa-4db0-b37b-64669f057530"
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+{% endif %}
 spec:
   selector:
     app: {{service.name}}
   ports:
     - name: https
       protocol: TCP
+{% if env.K8S_NAMESPACE != "dev" %}
       port: 443
+{% else %}
+      port: 81
+{% endif %}
       targetPort: 81
     - name: http
       protocol: TCP
       port: 80
       targetPort: 80
+{% if env.K8S_NAMESPACE != "dev" %}
   type: LoadBalancer
+{% else %}
+  type: ClusterIP
+{% endif %}
 ---
 apiVersion: v1
 kind: Service
@@ -176,7 +186,8 @@ data:
                       "routes":[
                         {
                           "prefix":"/",
-                          "cluster": "fallback"                        }
+                          "cluster": "fallback"
+                        }
                       ]
                     }
                   ]
@@ -225,13 +236,12 @@ data:
                         "*"
                       ],
                       "routes":[
-                    {% if env.K8S_NAMESPACE != "dev" %}
                         {
                           "prefix":"/",
                           "headers":[{"name": "x-gateway-env", "value": "dev"}],
-                          "cluster": "dev"
+                          "cluster": "dev",
+                          "request_headers_to_add": [{"key": "x-gateway-env", "value": ""}]
                         },
-                    {% endif %}
                     {% for prefix, weights in routes|dictsort %}
                         {
                           "prefix":"{{prefix}}",

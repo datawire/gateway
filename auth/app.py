@@ -137,7 +137,7 @@ def is_valid(token):
             raise APIError("invalid_header", "Unable to parse authentication token: %s" % e, 400)
 
 AUTH_WHITELIST = ("/callback", "/health")
-APP_WHITELIST = ("/scout",)
+APP_WHITELIST = ("/scout", "/scout-canary")
 WHITELIST = set(AUTH_WHITELIST + APP_WHITELIST)
 
 @app.route('/ambassador/auth', methods=['POST'])

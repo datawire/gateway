@@ -7,5 +7,4 @@ cpu: 0.25
 
 routes:
   "/cluster": kubernaut.{{"dev" if env.K8S_NAMESPACE == "dev" else "kubernaut"}}.svc.cluster.local
-  "/scout": scout.scout.svc.cluster.local
-  "/scut-canary": scout-canary.scout.svc.cluster.local
+  "/scout": scout-stable.scout.svc.cluster.local

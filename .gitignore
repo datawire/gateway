@@ -1,3 +1,4 @@
 forge.yaml
+.forge
 *.pyc
 telepresence.log
